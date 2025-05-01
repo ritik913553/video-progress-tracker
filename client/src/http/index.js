@@ -11,8 +11,9 @@ const api = axios.create({
 });
 
 export const signup =  (data)=>api.post('/users/register',data)
-export const login = async (data)=>api.post('/users/login',data)
+export const login =  (data)=>api.post('/users/login',data)
 export const logout = ()=>api.get('/users/logout')
+export const getAllVideos =  () => api.get('/videos/getAllVideos')
 
 
 export default api;
