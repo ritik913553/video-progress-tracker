@@ -24,13 +24,11 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-
-    const {error}=validateUser(req.body);
+    const { error } = validateUser(req.body);
     if (error) {
         const errorMessages = error.details.map((detail) => detail.message);
         throw new ApiError(400, errorMessages.join(", "));
-      }
-    
+    }
 
     const { fullName, email, password } = req.body;
 
@@ -158,10 +156,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             throw new ApiError(401, "Invalid refresh token");
         }
 
-        if (user?.refreshToken !== incomingRefreshToken) {
-            throw new ApiError(401, "Refresh token is expired or used");
-        }
-
         const options = {
             httpOnly: true,
             secure: true,
@@ -169,12 +163,20 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
         const { accessToken, refreshToken } =
             await generateAccessAndRefreshTokens(user._id);
+
+        const loggedInUser = await User.findById(user._id).select(
+            "-password -refreshToken"
+        );
+        if (!loggedInUser) {
+            throw new ApiError(401, "Invalid refresh token");
+        }
         return res
             .status(200)
             .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
             .json(
                 new ApiResponse(200, "Access token refreshed successfully", {
+                    user: loggedInUser,
                     accessToken,
                     refreshToken,
                 })
