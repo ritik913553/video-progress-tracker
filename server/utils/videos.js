@@ -1,6 +1,8 @@
+import { v4 as uuidv4 } from "uuid";
+
 const videos = [
     {
-        id: 1,
+        id: uuidv4(),
         title: "Introduction to JavaScript",
         description:
             "Learn the basics of JavaScript, the most popular programming language for web development.",
@@ -10,7 +12,7 @@ const videos = [
         url: "https://res.cloudinary.com/dnljildy8/video/upload/v1746085808/klirpah9oyoivozrwfvj.mp4",
     },
     {
-        id: 2,
+        id: uuidv4(),
         title: "React for Beginners",
         description:
             "A beginner-friendly guide to building user interfaces with React.",
@@ -20,7 +22,7 @@ const videos = [
         url: "https://res.cloudinary.com/dnljildy8/video/upload/v1746086189/videoplayback_bk3m6q.mp4",
     },
     {
-        id: 3,
+        id: uuidv4(),
         title: "Node.js Crash Course",
         description:
             "Get started with Node.js and learn how to build backend applications.",
@@ -30,7 +32,7 @@ const videos = [
         url: "https://res.cloudinary.com/dnljildy8/video/upload/v1746086422/videoplayback_1_mruhuk.mp4",
     },
     {
-        id: 4,
+        id: uuidv4(),
         title: "CSS Grid Layout",
         description:
             "Master CSS Grid Layout to create responsive and modern web designs.",
@@ -40,7 +42,7 @@ const videos = [
         url: "https://res.cloudinary.com/dnljildy8/video/upload/v1746085722/ln3e7d4xphzml0k9unvx.mp4",
     },
     {
-        id: 5,
+        id: uuidv4(),
         title: "Understanding APIs",
         description:
             "Learn what APIs are and how to use them to fetch data for your applications.",

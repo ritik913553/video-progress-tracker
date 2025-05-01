@@ -17,4 +17,11 @@ const getAllVideos = (req, res) => {
         })
     );
 };
-export { getAllVideos };
+const getVideoById = (videoId) => {
+    const video = videos.find((video) => video.id === videoId);
+    if (!video) {
+        return undefined;
+    }
+    return video;
+};
+export { getAllVideos, getVideoById };
