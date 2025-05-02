@@ -1,7 +1,17 @@
 import "dotenv/config";
 import connectDB from "./config/db.config.js";
 import { app } from "./app.js";
+import path from "path";
 
+
+// ----------------code for deployment------------------
+if (process.env.NODE_ENV === "production") {
+    const dirPath = path.resolve();
+    app.use(express.static("./client/dist"));
+    app.get("*", (req, res) => {
+      res.sendFile(path.resolve(dirPath, "./client/dist", "index.html"));
+    });
+  }
 
 
 
