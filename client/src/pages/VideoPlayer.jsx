@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAllVideos, getProgress, updateProgress } from "../http/index.js";
+import { formatTime } from "../utils/formatTime.js";
 
 const VideoPlayer = () => {
     const { videoId } = useParams();
@@ -23,10 +24,12 @@ const VideoPlayer = () => {
                 const selectedVideo = data.data.videos.find(
                     (v) => v.id === videoId
                 );
+                console.log(selectedVideo);
                 setVideo(selectedVideo);
 
                 // Fetch progress
                 const res = await getProgress(videoId);
+                console.log(res.data.data);
                 if (res.data.data) {
                     setProgress(res.data.data);
                     lastUpdateTimeRef.current = res.data.data.lastPosition;
@@ -50,11 +53,13 @@ const VideoPlayer = () => {
         setIsPlaying(true);
     };
 
+    //handle video pause
     const handlePause = () => {
         setIsPlaying(false);
         saveProgress();
     };
 
+    //handle video time update
     const handleTimeUpdate = () => {
         if (!isPlaying || !videoRef.current || isSeeking.current) return;
 
@@ -66,6 +71,7 @@ const VideoPlayer = () => {
         }
     };
 
+    // Save progress to the backend
     const saveProgress = async () => {
         if (!videoRef.current) return;
 
@@ -86,11 +92,10 @@ const VideoPlayer = () => {
             console.log("Progress updated:", newProgress.data.data);
             setProgress(newProgress.data.data);
             lastUpdateTimeRef.current = currentTime;
-        } catch (error) {
-        }
+        } catch (error) {}
     };
 
-    //handle the skeep of video 
+    //handle the skeep of video
     const handleSeek = () => {
         isSeeking.current = true;
         if (debounceTimeout.current) {
@@ -107,11 +112,7 @@ const VideoPlayer = () => {
     if (!video) {
         return <p>Loading...</p>;
     }
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-    };
+   
 
     return (
         <div className="min-h-screen w-full bg-gray-900 text-gray-100 p-5 flex flex-col items-center">
@@ -126,12 +127,41 @@ const VideoPlayer = () => {
                         ref={videoRef}
                         src={video.url}
                         controls
-                        className="w-full rounded-lg shadow-xl"
+                        className="w-full rounded-t-lg shadow-xl"
                         onPlay={handlePlay}
                         onPause={handlePause}
                         onTimeUpdate={handleTimeUpdate}
                         onSeeked={handleSeek}
                     ></video>
+
+                    {/* Watched Segments Timeline */}
+                    {progress?.watchedInterval && (
+                        <div className="absolute bottom-0 left-0 right-0 h-1 rounded-b-lg bg-gray-700 overflow-hidden ">
+                            <div className="relative w-full h-full ">
+                                {progress.watchedInterval.map(
+                                    (interval, index) => (
+                                        <div
+                                            key={index}
+                                            className="absolute h-full bg-blue-500"
+                                            style={{
+                                                left: `${
+                                                    (interval.start /
+                                                        progress.totalDuration) *
+                                                    100
+                                                }%`,
+                                                width: `${
+                                                    ((interval.end -
+                                                        interval.start) /
+                                                        progress.totalDuration) *
+                                                    100
+                                                }%`,
+                                            }}
+                                        ></div>
+                                    )
+                                )}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Completion Badge */}
                     {progress?.isCompleted && (
@@ -156,7 +186,9 @@ const VideoPlayer = () => {
                 </div>
 
                 {/* Description */}
-                <p className="mt-4 font-bold text-gray-300">{video.description}</p>
+                <p className="mt-4 font-bold text-gray-300">
+                    {video.description}
+                </p>
 
                 {/* Progress Section */}
                 <div className="mt-6 w-full bg-gray-800 rounded-lg p-4 shadow-lg">
@@ -180,14 +212,45 @@ const VideoPlayer = () => {
 
                     {progress ? (
                         <div className="space-y-4">
-                            {/* Progress Bar */}
-                            <div className="w-full bg-gray-700 rounded-full h-2.5">
+                            {/* Enhanced Progress Bar with Tooltip */}
+                            <div className="relative w-full bg-gray-700 rounded-full h-2.5">
                                 <div
-                                    className="bg-blue-600 h-2.5 rounded-full"
+                                    className="bg-blue-600 h-2.5 rounded-full relative"
                                     style={{
                                         width: `${progress.percentageWatched}%`,
                                     }}
-                                ></div>
+                                >
+                                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/2 w-3 h-3 bg-blue-400 rounded-full"></div>
+                                </div>
+
+                                {/* Watched segments indicators */}
+                                <div className="absolute inset-0 flex">
+                                    {progress.watchedIntervals?.map(
+                                        (interval, i) => {
+                                            const startPercent =
+                                                (interval.start /
+                                                    video.duration) *
+                                                100;
+                                            const endPercent =
+                                                (interval.end /
+                                                    video.duration) *
+                                                100;
+                                            const widthPercent =
+                                                endPercent - startPercent;
+
+                                            return (
+                                                <div
+                                                    key={i}
+                                                    className="h-full bg-blue-400 rounded-full"
+                                                    style={{
+                                                        left: `${startPercent}%`,
+                                                        width: `${widthPercent}%`,
+                                                    }}
+                                                ></div>
+                                            );
+                                        }
+                                    )}
+                                </div>
                             </div>
 
                             {/* Stats */}
@@ -249,5 +312,4 @@ const VideoPlayer = () => {
         </div>
     );
 };
-
 export default VideoPlayer;
