@@ -26,6 +26,9 @@ app.use("/api/v1/users",userRouter);
 app.use("/api/v1/videos",videoRouter);
 app.use("/api/v1/progress",progressRouter);
 
+// Log all registered routes (move this after all routes are registered)
+
+
 
 app.use(errorHandlerMiddleware);
 

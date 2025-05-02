@@ -4,14 +4,8 @@ import { app } from "./app.js";
 import path from "path";
 import express from "express";
 
-// ----------------code for deployment------------------
-if (process.env.NODE_ENV === "production") {
-    const dirPath = path.resolve();
-    app.use(express.static(path.join(dirPath, "client/dist")));
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve(dirPath, "client/dist", "index.html"));
-    });
-}
+
+
 
 connectDB()
     .then(() => {
