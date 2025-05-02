@@ -2,6 +2,7 @@ import "dotenv/config";
 import connectDB from "./config/db.config.js";
 import { app } from "./app.js";
 import path from "path";
+import express from "express";
 
 
 // ----------------code for deployment------------------
