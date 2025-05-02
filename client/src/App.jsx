@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import { useLoadingWithRefresh } from "./hooks/useLoadingWithRefresh";
 import { useAuth } from "./context/AuthProvider";
 import Loader from "./components/Loader";
+import VideoPlayer from "./pages/VideoPlayer";
 function App() {
     useLoadingWithRefresh();
     const { loading } = useAuth();
@@ -26,6 +27,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <Home />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/:videoId"
+                    element={
+                        <ProtectedRoute>
+                            <VideoPlayer />
                         </ProtectedRoute>
                     }
                 />

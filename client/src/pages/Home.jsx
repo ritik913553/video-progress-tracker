@@ -27,7 +27,6 @@ function Home() {
             try {
                 const { data } = await getAllVideos();
                 setVideos(data.data.videos);
-                console.log(data.data.videos);
             } catch (error) {
                 console.error("Error fetching videos", error);
                 toast.error("Error fetching videos");
@@ -54,7 +53,7 @@ function Home() {
                 
                 <div className="allvideo grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 pb-10">
                     {videos.map((video) => (
-                      <VideoCard video={video} />
+                      <VideoCard key={video.id} video={video} />
                     ))}
                 </div>
             </div>
