@@ -18,7 +18,6 @@ const getProgress = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Video ID is required");
     }
 
-
     const progress = await Progress.findOne({ userId, videoId });
     if (!progress) {
         throw new ApiError(404, "Progress not found");
@@ -31,7 +30,7 @@ const updateProgress = asyncHandler(async (req, res) => {
     const userId = req.user._id;
     const { interval, lastPosition } = req.body;
     const { videoId } = req.params;
-    if(!userId) {
+    if (!userId) {
         throw new ApiError(401, "Unauthorized");
     }
 
@@ -65,6 +64,12 @@ const updateProgress = asyncHandler(async (req, res) => {
             watchedInterval: { start: 0, end: 0 },
             totalDuration: videoDuration,
         });
+    }
+
+    if (progress.isCompleted) {
+        return res
+            .status(200)
+            .json(new ApiResponse(200, "Progress already completed", progress));
     }
 
     const { merged, percentageWatched, totalWatched } =

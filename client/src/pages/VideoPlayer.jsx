@@ -82,6 +82,7 @@ const VideoPlayer = () => {
         try {
             // Send the current interval to backend
             // Backend will handle merging and calculating totals
+            if(progress?.isCompleted) return;
             const newProgress = await updateProgress(videoId, {
                 startTime,
                 endTime,
