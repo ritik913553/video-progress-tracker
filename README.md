@@ -93,6 +93,7 @@ A video watching application that tracks viewing progress and remembers watched 
             └── README.md              # This documentation
 
 ## Demo
+   ### [Demo video link](https://www.loom.com/embed/b09e6e6681fc405691058568fb9720e6)
    This is All lecture Page
       ![Screenshot from 2025-05-02 17-45-17](https://github.com/user-attachments/assets/b6b0bdee-f846-4fae-9a48-1aa8e5baa81f)
       
