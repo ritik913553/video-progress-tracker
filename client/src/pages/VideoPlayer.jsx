@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAllVideos, getProgress, updateProgress } from "../http/index.js";
 import { formatTime } from "../utils/formatTime.js";
+import { debounce } from "../utils/debounce.js";
 
 const VideoPlayer = () => {
     const { videoId } = useParams();
@@ -46,12 +47,17 @@ const VideoPlayer = () => {
         fetchData();
     }, [videoId]);
 
+    const debouncedSaveProgress = debounce(() => {
+        saveProgress();
+    }, 500); 
+
     // Mobile-specific event handlers
     const handleTouchStart = () => {
         if (videoRef.current) {
-            saveProgress();
+            debouncedSaveProgress(); 
         }
         isSeeking.current = true;
+        setIsPlaying(false);
     };
 
     const handleTouchEnd = () => {
@@ -59,6 +65,7 @@ const VideoPlayer = () => {
         if (videoRef.current) {
             lastUpdateTimeRef.current = videoRef.current.currentTime;
         }
+        setIsPlaying(true);
     };
 
     // Handle video events
@@ -119,6 +126,10 @@ const VideoPlayer = () => {
         }, 500);
     };
 
+    const handleSeeking = () => {
+        isSeeking.current = true;
+        setIsPlaying(false);
+    };
     if (!video) {
         return <p>Loading...</p>;
     }
@@ -143,6 +154,7 @@ const VideoPlayer = () => {
                         onSeeked={handleSeek}
                         onTouchStart={handleTouchStart}
                         onTouchEnd={handleTouchEnd}
+                        onSeeking={handleSeeking}
                     ></video>
 
                     {/* Watched Segments Timeline */}
