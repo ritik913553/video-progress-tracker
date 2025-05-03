@@ -19,14 +19,12 @@ function AccountDetails() {
     } = useForm();
 
     const onSubmit = async (data) => {
-        console.log(data);
         try {
           const response = await signup(data);
           if(response.status === 201){
             toast.success("Account created!",{duration:4000,})
             navigate('/')
           }
-          console.log(response);
         } catch (error) {
           console.log((error));
 
@@ -36,9 +34,9 @@ function AccountDetails() {
     };
 
     return (
-        <div className="w-full h-screen flex justify-center items-center  flex-col sm:items-center px-3 sm:px-0 text-white">
-            <div className=" sm:w-[45%]">
-                <div className="w-full flex flex-col mt-20 sm:mt-10  sm:px-4 px-2">
+        <div className="w-full h-screen flex justify-center items-center  text-white">
+            <div className=" -mt-25 w-full p-2 sm:w-[45%]">
+                <div className="w-full flex flex-col sm:mt-10  sm:px-4 px-2">
                     <h1 className="text-4xl font-semibold mb-1 text-white ">
                         Sign Up
                     </h1>

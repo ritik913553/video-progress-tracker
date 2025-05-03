@@ -10,9 +10,7 @@ function Home() {
     const logoutHandler = async () => {
         try {
             const res = await logout();
-            console.log(res);
             if (res.status === 200) {
-                console.log("Logout successful");
                 setUser(null);
                 setIsAuthenticated(false);
                 toast.success("Logout successful");

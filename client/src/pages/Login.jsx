@@ -29,13 +29,9 @@ function Login() {
     const { setUser, setIsAuthenticated } = useAuth();
 
     const handleLogin = async (data) => {
-        console.log("Handled  login triggered");
-        console.log(data);
-        console.log(import.meta.env.VITE_API_URL);
 
         try {
             const res = await login(data);
-            console.log(res);
             if (res.status === 200) {
                 setUser(res.data.data.user);
                 setIsAuthenticated(true);
@@ -49,8 +45,8 @@ function Login() {
     };
 
     return (
-        <div className="w-full flex flex-col items-center sm:justify-center h-screen">
-            <section className="view w-full rounded-lg flex items-center justify-center p-4 sm:px-3 sm:mt-5 mt-2 sm:mb-0 mb-2 ">
+        <div className="w-full  h-screen flex flex-col items-center justify-center">
+            <section className="view w-full rounded-lg flex items-center justify-center p-4 sm:px-3  sm:mb-0 mb-2 -mt-25 ">
                 <div className="form sm:w-[500px] md:w-[500px] sm:h-[80%] w-[98%] rounded-lg ">
                     <div className="top text-white font-semibold text-xl w-fit ">
                         <h1 className="w-fit  font-semibold text-4xl mb-8 sm:mb-5">

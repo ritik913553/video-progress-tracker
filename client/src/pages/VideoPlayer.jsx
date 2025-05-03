@@ -24,12 +24,10 @@ const VideoPlayer = () => {
                 const selectedVideo = data.data.videos.find(
                     (v) => v.id === videoId
                 );
-                console.log(selectedVideo);
                 setVideo(selectedVideo);
 
                 // Fetch progress
                 const res = await getProgress(videoId);
-                console.log(res.data.data);
                 if (res.data.data) {
                     setProgress(res.data.data);
                     lastUpdateTimeRef.current = res.data.data.lastPosition;
@@ -47,6 +45,21 @@ const VideoPlayer = () => {
 
         fetchData();
     }, [videoId]);
+
+    // Mobile-specific event handlers
+    const handleTouchStart = () => {
+        if (videoRef.current) {
+            saveProgress();
+        }
+        isSeeking.current = true;
+    };
+
+    const handleTouchEnd = () => {
+        isSeeking.current = false;
+        if (videoRef.current) {
+            lastUpdateTimeRef.current = videoRef.current.currentTime;
+        }
+    };
 
     // Handle video events
     const handlePlay = () => {
@@ -87,9 +100,6 @@ const VideoPlayer = () => {
                 endTime,
                 currentTime,
             });
-            console.log("Strat Time:", startTime);
-            console.log("End Time:", endTime);
-            console.log("Progress updated:", newProgress.data.data);
             setProgress(newProgress.data.data);
             lastUpdateTimeRef.current = currentTime;
         } catch (error) {}
@@ -106,13 +116,12 @@ const VideoPlayer = () => {
             lastUpdateTimeRef.current = videoRef.current.currentTime;
             saveProgress(); // Save progress after debounce delay
             isSeeking.current = false;
-        }, 500); // 300ms debounce delay
+        }, 500);
     };
 
     if (!video) {
         return <p>Loading...</p>;
     }
-   
 
     return (
         <div className="min-h-screen w-full bg-gray-900 text-gray-100 p-5 flex flex-col items-center">
@@ -132,6 +141,8 @@ const VideoPlayer = () => {
                         onPause={handlePause}
                         onTimeUpdate={handleTimeUpdate}
                         onSeeked={handleSeek}
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
                     ></video>
 
                     {/* Watched Segments Timeline */}
